@@ -1,7 +1,7 @@
 package br.com.atitus.vitor.tcc.stepdefinitions;
 
 import br.com.atitus.vitor.tcc.pages.LoginPage;
-import io.cucumber.java.pt.*; // Anotações em português conforme Gherkin
+import io.cucumber.java.pt.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import static org.junit.Assert.assertTrue;
