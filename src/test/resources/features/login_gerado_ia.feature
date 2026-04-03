@@ -1,55 +1,86 @@
-gherkin
 # language: pt
+Funcionalidade: Autenticação de Usuário no Nexus
 
-Funcionalidade: Autenticação de Usuário Registrado no Nexus
   Como um usuário registrado
-  Desejo fazer login com meu e-mail e senha
-  Para acessar o sistema Nexus com segurança.
+  Eu quero acessar o sistema com meu e-mail e senha
+  Para que eu possa utilizar as funcionalidades do Nexus
 
-  Cenário: [Caminho Feliz] Login com sucesso usando e-mail e senha válidos
-    Dado que estou na página de login do Nexus
-    Quando eu preencher o campo de e-mail (data-test="email-input") com "usuario.valido@dominio.com"
-    E eu preencher o campo de senha (data-test="password-input") com "MinhaSenha123"
-    E eu clicar no botão "Login" (btn-primary)
-    Então devo ser autenticado com sucesso
-    E devo ser redirecionado para a página inicial do sistema Nexus
+  Contexto:
+    Dado que o sistema Nexus está online
+    E que existe um usuário registrado com e-mail "usuario@dominio.com" e senha "SenhaValida123"
 
-  Cenário: [Fluxo de Exceção] Tentativa de login com e-mail inválido
-    Dado que estou na página de login do Nexus
-    Quando eu preencher o campo de e-mail (data-test="email-input") com "emailinvalido"
-    E eu preencher o campo de senha (data-test="password-input") com "SenhaValida1"
-    E eu clicar no botão "Login" (btn-primary)
-    Então devo ver a mensagem de erro "Formato de e-mail inválido."
-    E devo permanecer na página de login
+  @caminho_feliz
+  Cenário: Login com sucesso usando credenciais válidas
+    Dado que estou na tela de login
+    Quando insiro o e-mail "usuario@dominio.com" no campo "data-test=email-input"
+    E insiro a senha "SenhaValida123" no campo "data-test=password-input"
+    E clico no botão "btn-primary=login-button"
+    Então sou autenticado com sucesso
+    E sou redirecionado para a página inicial do sistema
 
-  Cenário: [Fluxo de Exceção] Tentativa de login com senha fora do limite de caracteres
-    Dado que estou na página de login do Nexus
-    Quando eu preencher o campo de e-mail (data-test="email-input") com "usuario@dominio.com"
-    E eu preencher o campo de senha (data-test="password-input") com "curta"
-    E eu clicar no botão "Login" (btn-primary)
-    Então devo ver a mensagem de erro "A senha deve ter entre 6 e 12 caracteres."
-    E devo permanecer na página de login
+  @fluxo_excecao @email_invalido
+  Cenário: Tentativa de login com e-mail em formato inválido
+    Dado que estou na tela de login
+    Quando insiro o e-mail "emailinvalido" no campo "data-test=email-input"
+    E insiro a senha "SenhaValida123" no campo "data-test=password-input"
+    E clico no botão "btn-primary=login-button"
+    Então uma mensagem de erro "Formato de e-mail inválido" é exibida
+    E permaneço na tela de login
 
-  Cenário: [Cenário de Borda] Tentativa de login com campos vazios (e-mail e senha)
-    Dado que estou na página de login do Nexus
-    Quando eu deixar o campo de e-mail (data-test="email-input") vazio
-    E eu deixar o campo de senha (data-test="password-input") vazio
-    E eu clicar no botão "Login" (btn-primary)
-    Então devo ver a mensagem de erro "O e-mail é obrigatório."
-    E devo ver a mensagem de erro "A senha é obrigatória."
-    E devo permanecer na página de login
-    # Prioriza erro de obrigatoriedade sobre o de formato, conforme requisito.
+  @fluxo_excecao @senha_invalida
+  Cenário: Tentativa de login com senha muito curta (menos de 6 caracteres)
+    Dado que estou na tela de login
+    Quando insiro o e-mail "usuario@dominio.com" no campo "data-test=email-input"
+    E insiro a senha "123" no campo "data-test=password-input"
+    E clico no botão "btn-primary=login-button"
+    Então uma mensagem de erro "A senha deve ter entre 6 e 12 caracteres" é exibida
+    E permaneço na tela de login
 
-  Cenário: [Cenário Crítico] Bloqueio permanente da conta após 3 tentativas falhas de login
-    Dado que estou na página de login do Nexus
-    E que existe um usuário "usuario.bloqueado@dominio.com" com uma senha válida registrada
-    Quando eu tentar fazer login com e-mail "usuario.bloqueado@dominio.com" e senha "SenhaIncorreta1" (1ª tentativa)
-    Então devo ver a mensagem de erro "Credenciais inválidas."
-    E quando eu tentar fazer login com e-mail "usuario.bloqueado@dominio.com" e senha "SenhaIncorreta2" (2ª tentativa)
-    Então devo ver a mensagem de erro "Credenciais inválidas."
-    E quando eu tentar fazer login com e-mail "usuario.bloqueado@dominio.com" e senha "SenhaIncorreta3" (3ª tentativa)
-    Então devo ver a mensagem de erro "Credenciais inválidas."
-    E devo ver a mensagem "Sua conta foi permanentemente bloqueada devido a múltiplas tentativas de login falhas."
-    E ao tentar fazer login novamente com e-mail "usuario.bloqueado@dominio.com" e a senha válida
-    Então devo ver a mensagem "Sua conta está bloqueada. Entre em contato com o suporte."
-    E não devo conseguir acessar o sistema.
+  @fluxo_excecao @senha_invalida
+  Cenário: Tentativa de login com senha muito longa (mais de 12 caracteres)
+    Dado que estou na tela de login
+    Quando insiro o e-mail "usuario@dominio.com" no campo "data-test=email-input"
+    E insiro a senha "1234567890123" no campo "data-test=password-input"
+    E clico no botão "btn-primary=login-button"
+    Então uma mensagem de erro "A senha deve ter entre 6 e 12 caracteres" é exibida
+    E permaneço na tela de login
+
+  @cenario_borda @campos_vazios
+  Cenário: Tentativa de login com campo de e-mail vazio
+    Dado que estou na tela de login
+    Quando deixo o campo de e-mail "data-test=email-input" vazio
+    E insiro a senha "SenhaValida123" no campo "data-test=password-input"
+    E clico no botão "btn-primary=login-button"
+    Então uma mensagem de erro "E-mail é obrigatório" é exibida
+    E permaneço na tela de login
+
+  @cenario_borda @campos_vazios
+  Cenário: Tentativa de login com campo de senha vazio
+    Dado que estou na tela de login
+    Quando insiro o e-mail "usuario@dominio.com" no campo "data-test=email-input"
+    E deixo o campo de senha "data-test=password-input" vazio
+    E clico no botão "btn-primary=login-button"
+    Então uma mensagem de erro "Senha é obrigatória" é exibida
+    E permaneço na tela de login
+
+  @cenario_borda @campos_vazios @prioridade_erro
+  Cenário: Tentativa de login com ambos os campos vazios, priorizando erro de obrigatoriedade do e-mail
+    Dado que estou na tela de login
+    Quando deixo o campo de e-mail "data-test=email-input" vazio
+    E deixo o campo de senha "data-test=password-input" vazio
+    E clico no botão "btn-primary=login-button"
+    Então uma mensagem de erro "E-mail é obrigatório" é exibida
+    E permaneço na tela de login
+
+  @cenario_critico @bloqueio_conta
+  Cenário: Bloqueio permanente da conta após 3 tentativas de login falhas
+    Dado que estou na tela de login
+    E que a conta do usuário "usuario@dominio.com" não está bloqueada
+    Quando tento fazer login com o e-mail "usuario@dominio.com" e uma senha inválida "SenhaErrada1"
+    E recebo uma mensagem de erro "Credenciais inválidas"
+    E tento fazer login novamente com o e-mail "usuario@dominio.com" e uma senha inválida "SenhaErrada2"
+    E recebo uma mensagem de erro "Credenciais inválidas"
+    E tento fazer login pela terceira vez com o e-mail "usuario@dominio.com" e uma senha inválida "SenhaErrada3"
+    Então uma mensagem de erro "Sua conta foi bloqueada devido a múltiplas tentativas falhas" é exibida
+    E a conta do usuário "usuario@dominio.com" está bloqueada permanentemente
+    E permaneço na tela de login

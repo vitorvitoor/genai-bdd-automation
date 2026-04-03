@@ -9,25 +9,27 @@ public class TesteIA {
             System.out.println("Iniciando Orquestrador...");
 
             String prompt = """
-            PAPEL: Atue como um Engenheiro de QA Sênior especialista em BDD e Gherkin.
+            PAPEL: Atue como Analista de QA Sênior especialista em Automação.
             
-            CONTEXTO: Use o seguinte Requisito de Alto Nível (Tabela 1):
-            - Sistema: Nexus (Módulo de Autenticação)
-            - User Story: Usuário registrado acessa com e-mail e senha.
-            - Regras: E-mail formatado (nome@dominio.com), Senha de 6 a 12 caracteres.
-            - Bloqueio: 3 tentativas falhas em 24h geram bloqueio permanente.
-            - Borda: Se campos vazios, priorizar erro de obrigatoriedade sobre o de formato.
-            - Seletores: data-test para campos e btn-primary para o botão.
+            TAREFA: Converta os Gherkins fornecidos em uma Tabela de Planejamento de Testes (Markdown).
             
-            TAREFA: Gere uma lista de cenários Gherkin (em Português) cobrindo:
-            1. Caminho Feliz (Login com sucesso).
-            2. Fluxo de Exceção (E-mail inválido).
-            3. Fluxo de Exceção (Senha fora do limite).
-            4. Cenário de Borda (Campos vazios).
-            5. Cenário Crítico (Bloqueio após 3 tentativas).
+            ENTRADA BDD:
+            1. Login Sucesso: Dado que estou na tela de login, insiro credenciais válidas e clico em entrar.
+            2. Formato Inválido: Dado que insiro e-mail sem '@', recebo erro de formato.
+            3. Bloqueio Permanente: Dado que erro a senha 3 vezes, a conta é bloqueada permanentemente.
             
-            SAÍDA ESPERADA: Apenas o texto formatado do arquivo .feature.
+            DADOS TÉCNICOS OBRIGATÓRIOS:
+            - Campos: [data-test='email-input'] e [data-test='password-input']
+            - Botão: [btn-primary=login-button]
+            
+            FORMATO DA TABELA (Saída):
+            | ID | Cenário | Ações Detalhadas (Passo a Passo) | Resultado Esperado |
+            |---|---|---|---|
+            | CT-001 | Sucesso | ... | ... |
+            
+            REGRAS: Gere APENAS a tabela Markdown para estes 3 cenários. Seja conciso e direto.
             """;
+
             String resposta = cliente.enviarPrompt(prompt);
 
             System.out.println("--------------------------------------");

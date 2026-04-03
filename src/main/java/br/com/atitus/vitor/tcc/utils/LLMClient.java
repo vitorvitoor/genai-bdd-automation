@@ -19,10 +19,33 @@ public class LLMClient {
 
     public String enviarPrompt(String promptEnvio) {
         try {
-            // Estrutura do JSON para o Gemini
-            String jsonBody = "{ \"contents\": [{ \"parts\":[{ \"text\": \"" + promptEnvio + "\" }] }] }";
+            // Escapamento rigoroso para JSON (incluindo aspas e quebras de linha)
+            String promptFormatado = promptEnvio
+                    .replace("\\", "\\\\")
+                    .replace("\"", "\\\"")
+                    .replace("\n", "\\n")
+                    .replace("\r", "");
 
-            HttpClient client = HttpClient.newHttpClient();
+            String jsonBody = """
+            {
+              "contents": [{
+                "parts":[{
+                  "text": "%s"
+                }]
+              }],
+              "generationConfig": {
+                "temperature": 0.2,
+                "maxOutputTokens": 4096,\s
+                "topK": 40,
+                "topP": 0.95
+              }
+            }
+           \s""".formatted(promptFormatado);
+
+            HttpClient client = HttpClient.newBuilder()
+                    .connectTimeout(java.time.Duration.ofSeconds(20))
+                    .build();
+
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(URL))
                     .header("Content-Type", "application/json")
@@ -32,7 +55,6 @@ public class LLMClient {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-                // Parse simples do JSON de retorno para extrair o texto
                 JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
                 return jsonResponse.getAsJsonArray("candidates")
                         .get(0).getAsJsonObject()
@@ -41,7 +63,7 @@ public class LLMClient {
                         .get(0).getAsJsonObject()
                         .get("text").getAsString();
             } else {
-                return "Erro API: " + response.statusCode() + " - " + response.body();
+                return "Erro API (" + response.statusCode() + "): " + response.body();
             }
         } catch (Exception e) {
             return "Erro na requisição: " + e.getMessage();
