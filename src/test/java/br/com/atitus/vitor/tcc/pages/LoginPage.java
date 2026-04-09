@@ -6,18 +6,17 @@ import org.openqa.selenium.WebDriver;
 public class LoginPage {
     private WebDriver driver;
 
-    // Seletores baseados na Tabela 1 do Requisito
-    private By campoEmail = By.cssSelector("[data-test='email']");
-    private By campoSenha = By.cssSelector("[data-test='password']");
-    private By botaoEntrar = By.className("btn-primary");
-    private By mensagemErro = By.id("error-message");
+    private By campoUsuario = By.id("user-name");
+    private By campoSenha = By.id("password");
+    private By botaoEntrar = By.id("login-button");
+    private By mensagemErro = By.cssSelector("[data-test='error']");
 
     public LoginPage(WebDriver driver) {
         this.driver = driver;
     }
 
-    public void preencherEmail(String email) {
-        driver.findElement(campoEmail).sendKeys(email);
+    public void preencherEmail(String usuario) {
+        driver.findElement(campoUsuario).sendKeys(usuario);
     }
 
     public void preencherSenha(String senha) {
@@ -29,6 +28,10 @@ public class LoginPage {
     }
 
     public String obterMensagemErro() {
-        return driver.findElement(mensagemErro).getText();
+        try {
+            return driver.findElement(mensagemErro).getText();
+        } catch (Exception e) {
+            return "";
+        }
     }
 }
