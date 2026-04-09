@@ -4,12 +4,12 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 public class LoginPage {
-    private WebDriver driver;
+    private final WebDriver driver;
 
-    private By campoUsuario = By.id("user-name");
-    private By campoSenha = By.id("password");
-    private By botaoEntrar = By.id("login-button");
-    private By mensagemErro = By.cssSelector("[data-test='error']");
+    private final By campoUsuario = By.id("user-name");
+    private final By  campoSenha = By.id("password");
+    private final By  botaoEntrar = By.id("login-button");
+    private final By  mensagemErro = By.cssSelector("[data-test='error']");
 
     public LoginPage(WebDriver driver) {
         this.driver = driver;
