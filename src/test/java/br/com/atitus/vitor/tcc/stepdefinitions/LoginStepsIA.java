@@ -3,8 +3,11 @@ package br.com.atitus.vitor.tcc.stepdefinitions;
 import br.com.atitus.vitor.tcc.pages.LoginPage;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
 import io.cucumber.java.pt.*;
 import org.junit.Assert;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import java.time.Duration;
@@ -23,10 +26,17 @@ public class LoginStepsIA {
     }
 
     @After
-    public void teardown() {
-        if (driver != null) { driver.quit(); }
-    }
+    public void teardown(Scenario scenario) {
 
+        byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+
+        String nomeEvidencia = scenario.isFailed() ? "FALHA - Evidência" : "SUCESSO - Evidência";
+        scenario.attach(screenshot, "image/png", nomeEvidencia);
+
+        if (driver != null) {
+            driver.quit();
+        }
+    }
     @Dado("que estou na página de login do Swag Labs")
     public void que_estou_na_pagina_de_login() {
         driver.get("https://www.saucedemo.com/");
